@@ -1,5 +1,5 @@
 package dao;
-
+import java.util.ArrayList;
 import conexion.ConexionBD;
 import modelo.Rol;
 import modelo.Usuario;
@@ -43,5 +43,87 @@ public class UsuarioDAO {
             System.out.println("Error en login: " + e.getMessage());
         }
         return u;
+    }
+    /**
+     * Lista todos los usuarios activos con su rol.
+     */
+    public ArrayList<Usuario> listarUsuarios() {
+        ArrayList<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT u.id_usuario, u.usuario, u.contrasena, u.estado, " +
+                     "r.id_rol, r.nombre AS rol " +
+                     "FROM usuarios u " +
+                     "JOIN roles r ON u.id_rol = r.id_rol " +
+                     "ORDER BY u.usuario";
+        try {
+            Connection cn = ConexionBD.getConexion();
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Rol rol = new Rol(rs.getInt("id_rol"), rs.getString("rol"));
+                lista.add(new Usuario(
+                    rs.getInt("id_usuario"),
+                    rs.getString("usuario"),
+                    rs.getString("contrasena"),
+                    rol,
+                    rs.getBoolean("estado")
+                ));
+            }
+        } catch (Exception e) {
+            System.out.println("Error al listar usuarios: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    /**
+     * Registra un nuevo usuario en la base de datos.
+     */
+    public boolean registrarUsuario(Usuario u) {
+        String sql = "INSERT INTO usuarios (usuario, contrasena, id_rol, estado) VALUES (?,?,?,TRUE)";
+        try {
+            Connection cn = ConexionBD.getConexion();
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ps.setString(1, u.getUsuario());
+            ps.setString(2, u.getContrasena());
+            ps.setInt(3, u.getRol().getIdRol());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println("Error al registrar usuario: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Actualiza los datos de un usuario existente.
+     */
+    public boolean actualizarUsuario(Usuario u) {
+        String sql = "UPDATE usuarios SET usuario=?, contrasena=?, id_rol=? WHERE id_usuario=?";
+        try {
+            Connection cn = ConexionBD.getConexion();
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ps.setString(1, u.getUsuario());
+            ps.setString(2, u.getContrasena());
+            ps.setInt(3, u.getRol().getIdRol());
+            ps.setInt(4, u.getIdUsuario());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println("Error al actualizar usuario: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Elimina lógicamente un usuario (cambia estado a FALSE).
+     */
+    public boolean eliminarUsuario(int idUsuario) {
+        String sql = "UPDATE usuarios SET estado = FALSE WHERE id_usuario = ?";
+        try {
+            Connection cn = ConexionBD.getConexion();
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println("Error al eliminar usuario: " + e.getMessage());
+            return false;
+        }
     }
 }

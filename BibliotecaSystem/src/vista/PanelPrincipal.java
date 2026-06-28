@@ -141,6 +141,24 @@ public class PanelPrincipal extends JFrame {
             case "LIBROS":
                 panelContenido.add(new GestionLibros(), BorderLayout.CENTER);
                 break;
+            case "ESTUDIANTES":
+                panelContenido.add(new GestionEstudiantes(), BorderLayout.CENTER);
+                break;
+            case "PRÉSTAMOS":
+                panelContenido.add(new GestionPrestamos(), BorderLayout.CENTER);
+                break;
+            case "USUARIOS":
+                panelContenido.add(new GestionUsuarios(), BorderLayout.CENTER);
+                break;
+            case "MULTAS":
+                panelContenido.add(new GestionMultas(), BorderLayout.CENTER);
+                break;
+            case "REPORTES":
+                panelContenido.add(new Reportes(), BorderLayout.CENTER);
+                break;
+            case "DEVOLUCIONES":
+                panelContenido.add(new GestionDevoluciones(), BorderLayout.CENTER);
+                break;
             default:
                 JLabel lblTemp = new JLabel("Módulo: " + opcion, SwingConstants.CENTER);
                 lblTemp.setForeground(Color.WHITE);
