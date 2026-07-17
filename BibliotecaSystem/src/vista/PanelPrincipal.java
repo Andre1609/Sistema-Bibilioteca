@@ -33,26 +33,48 @@ public class PanelPrincipal extends JFrame {
         setResizable(false);
         setLayout(new BorderLayout());
 
-        // Header
+     // Header
         JPanel header = new JPanel();
         header.setBackground(Color.BLACK);
-        header.setPreferredSize(new Dimension(900, 50));
-        header.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 10));
+        header.setPreferredSize(new Dimension(900, 70));
+        header.setLayout(new BorderLayout());
+
+        // Logo UTP
+        JLabel lblLogo = new JLabel();
+        try {
+            java.net.URL imgUrl = getClass().getResource("/recursos/UTP.png");
+            ImageIcon icon = new ImageIcon(imgUrl);
+            Image img = icon.getImage().getScaledInstance(150, 55, Image.SCALE_SMOOTH);
+            lblLogo.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar el logo: " + e.getMessage());
+        }
+        lblLogo.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        header.add(lblLogo, BorderLayout.WEST);
+
+        // Info usuario
+        JPanel panelInfo = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 20));
+        panelInfo.setBackground(Color.BLACK);
 
         lblUsuario = new JLabel("USUARIO: " + SesionActual.getUsuario().getUsuario().toUpperCase()
                 + " | ROL: " + SesionActual.getRolActual());
         lblUsuario.setForeground(Color.WHITE);
         lblUsuario.setFont(new Font("Arial", Font.BOLD, 14));
-        header.add(lblUsuario);
+        panelInfo.add(lblUsuario);
+
+        header.add(panelInfo, BorderLayout.CENTER);
 
         // Botón cerrar sesión
+        JPanel panelCerrar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 20));
+        panelCerrar.setBackground(Color.BLACK);
         JButton btnCerrar = new JButton("CERRAR SESIÓN");
         btnCerrar.setBackground(Color.BLACK);
         btnCerrar.setForeground(Color.RED);
         btnCerrar.setBorder(BorderFactory.createLineBorder(Color.RED));
         btnCerrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnCerrar.addActionListener(e -> cerrarSesion());
-        header.add(btnCerrar);
+        panelCerrar.add(btnCerrar);
+        header.add(panelCerrar, BorderLayout.EAST);
 
         add(header, BorderLayout.NORTH);
 
@@ -101,8 +123,6 @@ public class PanelPrincipal extends JFrame {
 
             case "ESTUDIANTE":
                 agregarBotonMenu("CATÁLOGO");
-                agregarBotonMenu("MIS PRÉSTAMOS");
-                agregarBotonMenu("MIS MULTAS");
                 break;
 
             default:
@@ -136,6 +156,13 @@ public class PanelPrincipal extends JFrame {
      * Maneja la navegación entre pantallas según el botón del menú.
      */
     private void manejarNavegacion(String opcion) {
+        // Registrar en LinkedList el módulo visitado
+        SesionActual.getEstructuras().registrarNavegacion(opcion);
+        // Registrar en Stack la operación
+        SesionActual.getEstructuras().registrarOperacion(
+            "NAVEGÓ A: " + opcion + " - Usuario: " + SesionActual.getUsuario().getUsuario()
+        );
+
         panelContenido.removeAll();
         switch (opcion) {
             case "LIBROS":
@@ -147,6 +174,9 @@ public class PanelPrincipal extends JFrame {
             case "PRÉSTAMOS":
                 panelContenido.add(new GestionPrestamos(), BorderLayout.CENTER);
                 break;
+            case "DEVOLUCIONES":
+                panelContenido.add(new GestionDevoluciones(), BorderLayout.CENTER);
+                break;
             case "USUARIOS":
                 panelContenido.add(new GestionUsuarios(), BorderLayout.CENTER);
                 break;
@@ -156,8 +186,14 @@ public class PanelPrincipal extends JFrame {
             case "REPORTES":
                 panelContenido.add(new Reportes(), BorderLayout.CENTER);
                 break;
-            case "DEVOLUCIONES":
-                panelContenido.add(new GestionDevoluciones(), BorderLayout.CENTER);
+            case "CATÁLOGO":
+                panelContenido.add(new VistaEstudiante(), BorderLayout.CENTER);
+                break;
+            case "MIS PRÉSTAMOS":
+                panelContenido.add(new VistaEstudiante(), BorderLayout.CENTER);
+                break;
+            case "MIS MULTAS":
+                panelContenido.add(new VistaEstudiante(), BorderLayout.CENTER);
                 break;
             default:
                 JLabel lblTemp = new JLabel("Módulo: " + opcion, SwingConstants.CENTER);

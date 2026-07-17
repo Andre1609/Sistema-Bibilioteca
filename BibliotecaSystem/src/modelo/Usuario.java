@@ -9,15 +9,20 @@ public class Usuario {
     private String contrasena;
     private Rol rol;
     private boolean estado;
+    private int idEstudiante;
+    
 
-    public Usuario(int idUsuario, String usuario, String contrasena, Rol rol, boolean estado) {
+    public Usuario(int idUsuario, String usuario, String contrasena, Rol rol, boolean estado, int idEstudiante) {
         this.idUsuario = idUsuario;
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.rol = rol;
         this.estado = estado;
+        this.idEstudiante = idEstudiante;
     }
-
+    
+    public int getIdEstudiante() { return idEstudiante; }
+    public void setIdEstudiante(int idEstudiante) { this.idEstudiante = idEstudiante; }
     public int getIdUsuario() { return idUsuario; }
     public String getUsuario() { return usuario; }
     public String getContrasena() { return contrasena; }

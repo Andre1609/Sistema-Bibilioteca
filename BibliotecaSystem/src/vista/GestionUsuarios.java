@@ -101,7 +101,7 @@ public class GestionUsuarios extends JPanel {
         add(panelForm, BorderLayout.NORTH);
 
         // ── Panel inferior: tabla ──
-        String[] columnas = {"ID", "Usuario", "Contraseña", "Rol", "Estado"};
+        String[] columnas = {"ID", "Usuario", "Contraseña", "Rol"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
@@ -155,7 +155,6 @@ public class GestionUsuarios extends JPanel {
                 u.getUsuario(),
                 u.getContrasena(),
                 u.getRol().getNombre(),
-                u.isEstado() ? "ACTIVO" : "INACTIVO"
             });
         }
     }
@@ -185,7 +184,7 @@ public class GestionUsuarios extends JPanel {
         if (!validarCampos()) return;
         Rol rol = (Rol) cmbRol.getSelectedItem();
         Usuario u = new Usuario(0, txtUsuario.getText().trim(),
-            txtContrasena.getText().trim(), rol, true);
+            txtContrasena.getText().trim(), rol, true, 0);
         if (usuarioDAO.registrarUsuario(u)) {
             JOptionPane.showMessageDialog(this, "Usuario registrado correctamente.");
             limpiarFormulario();
@@ -195,6 +194,7 @@ public class GestionUsuarios extends JPanel {
                 "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
 
     /**
      * Edita el usuario seleccionado en la tabla.
@@ -207,7 +207,7 @@ public class GestionUsuarios extends JPanel {
         if (!validarCampos()) return;
         Rol rol = (Rol) cmbRol.getSelectedItem();
         Usuario u = new Usuario(idUsuarioSeleccionado, txtUsuario.getText().trim(),
-            txtContrasena.getText().trim(), rol, true);
+            txtContrasena.getText().trim(), rol, true, 0);
         if (usuarioDAO.actualizarUsuario(u)) {
             JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente.");
             limpiarFormulario();

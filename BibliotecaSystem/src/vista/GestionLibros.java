@@ -1,4 +1,7 @@
 package vista;
+import util.SesionActual;
+
+
 
 import dao.CategoriaDAO;
 import dao.LibroDAO;
@@ -220,7 +223,18 @@ public class GestionLibros extends JPanel {
     private void cargarTabla() {
         modeloTabla.setRowCount(0);
         ArrayList<Libro> lista = libroDAO.listarLibros();
+
+        // Limpiar catálogo anterior y cargar nuevos libros
+        SesionActual.getEstructuras().getCatalogo().clear();
         for (Libro l : lista) {
+            SesionActual.getEstructuras().agregarLibroCatalogo(l);
+        }
+
+        // Ordenar con BubbleSort
+        SesionActual.getEstructuras().ordenarCatalogoPorTitulo();
+
+        // Mostrar la lista YA ORDENADA en la tabla
+        for (Libro l : SesionActual.getEstructuras().getCatalogo()) {
             modeloTabla.addRow(new Object[]{
                 l.getIdLibro(), l.getTitulo(), l.getAutor(),
                 l.getIsbn(), l.getEditorial(), l.getAnioPublicacion(),
@@ -251,6 +265,10 @@ public class GestionLibros extends JPanel {
         if (!validarCampos()) return;
         Libro l = obtenerLibroDelFormulario();
         if (libroDAO.registrarLibro(l)) {
+            // Registrar en Stack
+            SesionActual.getEstructuras().registrarOperacion(
+                "REGISTRAR LIBRO: " + l.getTitulo()
+            );
             JOptionPane.showMessageDialog(this, "Libro registrado correctamente.");
             limpiarFormulario();
             cargarTabla();
@@ -291,6 +309,10 @@ public class GestionLibros extends JPanel {
             "¿Desea eliminar este libro?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             if (libroDAO.eliminarLibro(idLibroSeleccionado)) {
+                // Registrar en Stack
+                SesionActual.getEstructuras().registrarOperacion(
+                    "ELIMINAR LIBRO ID: " + idLibroSeleccionado
+                );
                 JOptionPane.showMessageDialog(this, "Libro eliminado correctamente.");
                 limpiarFormulario();
                 cargarTabla();

@@ -1,5 +1,4 @@
 package modelo;
-
 /**
  * Modelo que representa un estudiante del sistema.
  */

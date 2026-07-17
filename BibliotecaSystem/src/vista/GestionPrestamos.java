@@ -265,14 +265,22 @@ public class GestionPrestamos extends JPanel {
         p.setIdUsuario(SesionActual.getUsuario().getIdUsuario());
         p.setIdEstudiante(estudianteSeleccionado.getIdEstudiante());
 
+        // Encolar el préstamo en la Queue antes de procesarlo
+        SesionActual.getEstructuras().encolarPrestamo(p);
+        Prestamo siguiente = SesionActual.getEstructuras().procesarPrestamo();
+        System.out.println("Procesando préstamo de estudiante ID: " + siguiente.getIdEstudiante());
+
         int idPrestamo = prestamoDAO.registrarPrestamo(p);
         if (idPrestamo != -1) {
             prestamoDAO.registrarDetalle(idPrestamo, libroSeleccionado.getIdLibro(), 1);
             prestamoDAO.reducirStock(libroSeleccionado.getIdLibro(), 1);
-            java.time.format.DateTimeFormatter fmt = 
-            	    java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            	JOptionPane.showMessageDialog(this, "Préstamo registrado correctamente.\n" +
-            	    "Vence el: " + fechaVencimiento.toLocalDate().format(fmt));
+            SesionActual.getEstructuras().registrarOperacion(
+                "REGISTRAR PRÉSTAMO - Estudiante ID: " + estudianteSeleccionado.getIdEstudiante()
+            );
+            java.time.format.DateTimeFormatter fmt =
+                java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            JOptionPane.showMessageDialog(this, "Préstamo registrado correctamente.\n" +
+                "Vence el: " + fechaVencimiento.toLocalDate().format(fmt));
             limpiarFormulario();
             cargarTabla();
         } else {
