@@ -197,9 +197,8 @@ public class VistaEstudiante extends JPanel {
                      "JOIN libros l ON dp.id_libro = l.id_libro " +
                      "WHERE p.id_estudiante = ? " +
                      "ORDER BY p.fecha_prestamo DESC";
-        try {
+        try (java.sql.Connection cn = conexion.ConexionBD.getConexion()) {
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            java.sql.Connection cn = conexion.ConexionBD.getConexion();
             java.sql.PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idEstudiante);
             java.sql.ResultSet rs = ps.executeQuery();
@@ -265,9 +264,8 @@ public class VistaEstudiante extends JPanel {
                      "JOIN libros l ON dp.id_libro = l.id_libro " +
                      "WHERE p.id_estudiante = ? " +
                      "ORDER BY m.pagada ASC";
-        try {
+        try (java.sql.Connection cn = conexion.ConexionBD.getConexion()) {
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            java.sql.Connection cn = conexion.ConexionBD.getConexion();
             java.sql.PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idEstudiante);
             java.sql.ResultSet rs = ps.executeQuery();

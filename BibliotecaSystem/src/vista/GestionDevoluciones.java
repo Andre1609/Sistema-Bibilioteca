@@ -103,9 +103,8 @@ public class GestionDevoluciones extends JPanel {
                      "JOIN libros l ON dp.id_libro = l.id_libro " +
                      "WHERE p.estado = 'ACTIVO' " +
                      "ORDER BY p.fecha_vencimiento ASC";
-        try {
+        try (java.sql.Connection cn = conexion.ConexionBD.getConexion()) {
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            java.sql.Connection cn = conexion.ConexionBD.getConexion();
             java.sql.PreparedStatement ps = cn.prepareStatement(sql);
             java.sql.ResultSet rs = ps.executeQuery();
             while (rs.next()) {
