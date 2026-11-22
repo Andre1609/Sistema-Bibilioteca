@@ -18,8 +18,7 @@ public class PrestamoDAO {
     public int registrarPrestamo(Prestamo prestamo) {
         String sql = "INSERT INTO prestamos (fecha_prestamo, fecha_vencimiento, " +
                      "estado, id_usuario, id_estudiante) VALUES (?,?,?,?,?) RETURNING id_prestamo";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setDate(1, prestamo.getFechaPrestamo());
             ps.setDate(2, prestamo.getFechaVencimiento());
@@ -39,8 +38,7 @@ public class PrestamoDAO {
      */
     public boolean registrarDetalle(int idPrestamo, int idLibro, int cantidad) {
         String sql = "INSERT INTO detalle_prestamo (id_prestamo, id_libro, cantidad) VALUES (?,?,?)";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idPrestamo);
             ps.setInt(2, idLibro);
@@ -58,8 +56,7 @@ public class PrestamoDAO {
     public boolean reducirStock(int idLibro, int cantidad) {
         String sql = "UPDATE libros SET stock_disponible = stock_disponible - ? " +
                      "WHERE id_libro = ? AND stock_disponible >= ?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, cantidad);
             ps.setInt(2, idLibro);
@@ -76,8 +73,7 @@ public class PrestamoDAO {
      */
     public boolean aumentarStock(int idLibro, int cantidad) {
         String sql = "UPDATE libros SET stock_disponible = stock_disponible + ? WHERE id_libro = ?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, cantidad);
             ps.setInt(2, idLibro);
@@ -100,8 +96,7 @@ public class PrestamoDAO {
                      "FROM prestamos p " +
                      "JOIN estudiantes e ON p.id_estudiante = e.id_estudiante " +
                      "WHERE p.estado = 'ACTIVO' ORDER BY p.fecha_prestamo DESC";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -134,8 +129,7 @@ public class PrestamoDAO {
                      "FROM prestamos p " +
                      "JOIN estudiantes e ON p.id_estudiante = e.id_estudiante " +
                      "ORDER BY p.fecha_prestamo DESC";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -161,8 +155,7 @@ public class PrestamoDAO {
      */
     public boolean registrarDevolucion(int idPrestamo) {
         String sql = "UPDATE prestamos SET estado = 'DEVUELTO' WHERE id_prestamo = ?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idPrestamo);
             return ps.executeUpdate() > 0;
@@ -177,8 +170,7 @@ public class PrestamoDAO {
      */
     public int obtenerIdLibroDePrestamo(int idPrestamo) {
         String sql = "SELECT id_libro FROM detalle_prestamo WHERE id_prestamo = ?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idPrestamo);
             ResultSet rs = ps.executeQuery();
@@ -201,8 +193,7 @@ public class PrestamoDAO {
                      "JOIN estudiantes e ON p.id_estudiante = e.id_estudiante " +
                      "WHERE p.estado = 'ACTIVO' AND p.fecha_vencimiento < CURRENT_DATE " +
                      "ORDER BY p.fecha_vencimiento ASC";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

@@ -24,8 +24,7 @@ public class UsuarioDAO {
 	                 "FROM usuarios u " +
 	                 "JOIN roles r ON u.id_rol = r.id_rol " +
 	                 "WHERE u.usuario = ? AND u.contrasena = ? AND u.estado = TRUE";
-	    try {
-	        Connection cn = ConexionBD.getConexion();
+	    try (Connection cn = ConexionBD.getConexion()) {
 	        PreparedStatement ps = cn.prepareStatement(sql);
 	        ps.setString(1, usuario);
 	        ps.setString(2, contrasena);
@@ -57,8 +56,7 @@ public class UsuarioDAO {
                 "FROM usuarios u " +
                 "JOIN roles r ON u.id_rol = r.id_rol " +
                 "ORDER BY u.usuario";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -83,8 +81,7 @@ public class UsuarioDAO {
      */
     public boolean registrarUsuario(Usuario u) {
         String sql = "INSERT INTO usuarios (usuario, contrasena, id_rol, estado) VALUES (?,?,?,TRUE)";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setString(1, u.getUsuario());
             ps.setString(2, u.getContrasena());
@@ -101,8 +98,7 @@ public class UsuarioDAO {
      */
     public boolean actualizarUsuario(Usuario u) {
         String sql = "UPDATE usuarios SET usuario=?, contrasena=?, id_rol=? WHERE id_usuario=?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setString(1, u.getUsuario());
             ps.setString(2, u.getContrasena());
@@ -119,8 +115,7 @@ public class UsuarioDAO {
      */
     public boolean eliminarUsuario(int idUsuario) {
         String sql = "DELETE FROM usuarios WHERE id_usuario = ?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idUsuario);
             return ps.executeUpdate() > 0;

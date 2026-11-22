@@ -17,8 +17,7 @@ public class CategoriaDAO {
     public ArrayList<Categoria> listarCategorias() {
         ArrayList<Categoria> lista = new ArrayList<>();
         String sql = "SELECT id_categoria, nombre FROM categorias ORDER BY nombre";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

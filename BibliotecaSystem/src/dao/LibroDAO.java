@@ -22,8 +22,7 @@ public class LibroDAO {
                      "FROM libros l " +
                      "JOIN categorias c ON l.id_categoria = c.id_categoria " +
                      "WHERE l.estado = TRUE ORDER BY l.titulo";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -55,8 +54,7 @@ public class LibroDAO {
         String sql = "INSERT INTO libros (titulo, autor, isbn, editorial, " +
                      "anio_publicacion, stock_total, stock_disponible, id_categoria, estado) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE)";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setString(1, libro.getTitulo());
             ps.setString(2, libro.getAutor());
@@ -80,8 +78,7 @@ public class LibroDAO {
         String sql = "UPDATE libros SET titulo=?, autor=?, isbn=?, editorial=?, " +
                      "anio_publicacion=?, stock_total=?, stock_disponible=?, id_categoria=? " +
                      "WHERE id_libro=?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setString(1, libro.getTitulo());
             ps.setString(2, libro.getAutor());
@@ -104,8 +101,7 @@ public class LibroDAO {
      */
     public boolean eliminarLibro(int idLibro) {
         String sql = "UPDATE libros SET estado = FALSE WHERE id_libro = ?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idLibro);
             return ps.executeUpdate() > 0;
@@ -127,8 +123,7 @@ public class LibroDAO {
                      "JOIN categorias c ON l.id_categoria = c.id_categoria " +
                      "WHERE l.estado = TRUE AND " +
                      "(LOWER(l.titulo) LIKE ? OR LOWER(l.autor) LIKE ?)";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             String busqueda = "%" + criterio.toLowerCase() + "%";
             ps.setString(1, busqueda);

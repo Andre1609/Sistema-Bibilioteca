@@ -131,8 +131,7 @@ public class GestionUsuarios extends JPanel {
     private void cargarRoles() {
         cmbRol.removeAllItems();
         String sql = "SELECT id_rol, nombre FROM roles ORDER BY nombre";
-        try {
-            java.sql.Connection cn = conexion.ConexionBD.getConexion();
+        try (java.sql.Connection cn = conexion.ConexionBD.getConexion()) {
             java.sql.PreparedStatement ps = cn.prepareStatement(sql);
             java.sql.ResultSet rs = ps.executeQuery();
             while (rs.next()) {

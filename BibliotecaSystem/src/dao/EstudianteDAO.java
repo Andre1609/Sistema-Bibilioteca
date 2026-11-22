@@ -19,8 +19,7 @@ public class EstudianteDAO {
         String sql = "SELECT id_estudiante, codigo, nombres, apellidos, " +
                      "carrera, correo, telefono, estado " +
                      "FROM estudiantes WHERE estado = TRUE ORDER BY apellidos";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -47,8 +46,7 @@ public class EstudianteDAO {
     public boolean registrarEstudiante(Estudiante e) {
         String sql = "INSERT INTO estudiantes (codigo, nombres, apellidos, " +
                      "carrera, correo, telefono, estado) VALUES (?,?,?,?,?,?,TRUE)";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setString(1, e.getCodigo());
             ps.setString(2, e.getNombres());
@@ -69,8 +67,7 @@ public class EstudianteDAO {
     public boolean actualizarEstudiante(Estudiante e) {
         String sql = "UPDATE estudiantes SET codigo=?, nombres=?, apellidos=?, " +
                      "carrera=?, correo=?, telefono=? WHERE id_estudiante=?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setString(1, e.getCodigo());
             ps.setString(2, e.getNombres());
@@ -91,8 +88,7 @@ public class EstudianteDAO {
      */
     public boolean eliminarEstudiante(int idEstudiante) {
         String sql = "UPDATE estudiantes SET estado = FALSE WHERE id_estudiante = ?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idEstudiante);
             return ps.executeUpdate() > 0;
@@ -111,8 +107,7 @@ public class EstudianteDAO {
                      "carrera, correo, telefono, estado " +
                      "FROM estudiantes WHERE estado = TRUE AND " +
                      "(LOWER(nombres) LIKE ? OR LOWER(apellidos) LIKE ? OR LOWER(codigo) LIKE ?)";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             String busqueda = "%" + criterio.toLowerCase() + "%";
             ps.setString(1, busqueda);
@@ -144,8 +139,7 @@ public class EstudianteDAO {
         String sql = "SELECT id_estudiante, codigo, nombres, apellidos, " +
                      "carrera, correo, telefono, estado " +
                      "FROM estudiantes WHERE codigo = ? AND estado = TRUE";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setString(1, codigo);
             ResultSet rs = ps.executeQuery();

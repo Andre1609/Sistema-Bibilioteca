@@ -105,8 +105,7 @@ public class Reportes extends JPanel {
                      "JOIN categorias c ON l.id_categoria = c.id_categoria " +
                      "GROUP BY l.titulo, l.autor, c.nombre " +
                      "ORDER BY total_prestamos DESC";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -140,9 +139,8 @@ public class Reportes extends JPanel {
                      "JOIN libros l ON dp.id_libro = l.id_libro " +
                      "WHERE p.estado = 'ACTIVO' " +
                      "ORDER BY p.fecha_vencimiento ASC";
-        try {
+        try (Connection cn = ConexionBD.getConexion()) {
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            Connection cn = ConexionBD.getConexion();
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -177,9 +175,8 @@ public class Reportes extends JPanel {
                      "JOIN detalle_prestamo dp ON p.id_prestamo = dp.id_prestamo " +
                      "JOIN libros l ON dp.id_libro = l.id_libro " +
                      "ORDER BY p.fecha_prestamo DESC";
-        try {
+        try (Connection cn = ConexionBD.getConexion()) {
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            Connection cn = ConexionBD.getConexion();
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

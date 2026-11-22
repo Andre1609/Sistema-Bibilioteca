@@ -17,8 +17,7 @@ public class MultaDAO {
         // Verificar si ya existe multa para ese préstamo
         if (existeMulta(idPrestamo)) return false;
         String sql = "INSERT INTO multas (id_prestamo, monto, motivo, pagada) VALUES (?,?,?,FALSE)";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idPrestamo);
             ps.setDouble(2, monto);
@@ -35,8 +34,7 @@ public class MultaDAO {
      */
     public boolean existeMulta(int idPrestamo) {
         String sql = "SELECT id_multa FROM multas WHERE id_prestamo = ?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idPrestamo);
             ResultSet rs = ps.executeQuery();
@@ -52,8 +50,7 @@ public class MultaDAO {
      */
     public boolean pagarMulta(int idMulta) {
         String sql = "UPDATE multas SET pagada = TRUE WHERE id_multa = ?";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, idMulta);
             return ps.executeUpdate() > 0;
@@ -75,8 +72,7 @@ public class MultaDAO {
                      "JOIN prestamos p ON m.id_prestamo = p.id_prestamo " +
                      "JOIN estudiantes e ON p.id_estudiante = e.id_estudiante " +
                      "ORDER BY m.pagada ASC, p.fecha_vencimiento ASC";
-        try {
-            Connection cn = ConexionBD.getConexion();
+        try (Connection cn = ConexionBD.getConexion()) {
             PreparedStatement ps = cn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
